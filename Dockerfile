@@ -6,6 +6,8 @@ ADD requirements /pytodo
 
 RUN pip install -r requirements
 
-EXPOSE 80
+ENV FLASK_APP=main.py
 
-CMD python main.py
+ENV FLASK_DEBUG=1
+
+EXPOSE 80
