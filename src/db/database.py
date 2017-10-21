@@ -16,11 +16,6 @@ class Database:
             self.db.cursor().executescript(f.read())
         self.db.commit()
 
-    @app.cli.command('initdb')
-    def initdb_command(self):
-        self.init_db()
-        print('Initialized the database.')
-
     def connect_db(self):
         """Connects to the specific database."""
         db = sqlite3.connect(app.config['DATABASE'])

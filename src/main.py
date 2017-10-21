@@ -8,6 +8,11 @@ app.config.update(dict(SECRET_KEY='dev_key'))
 
 database = Database()
 
+@app.cli.command('initdb')
+def initdb_command():
+    database.init_db()
+    print('Initialized the database.')
+
 @app.route('/')
 def home():
     return render_template('layout.html')
