@@ -1,31 +1,29 @@
 {% extends "layout.html" %} 
 {% block body %}
 <div class="container">
-<div class="row">
-    {% if error %}<p>{{ error }}</p>{% endif %}
-        <form class="col s4 push-s4 center" method="post" action="{{ url_for('login') }}">
+    <div class="row">
+        {% if error %}
+        <p>{{ error }}</p>{% endif %}
+        <form class="col s4 push-s4 center" method="post" action="{{ url_for('register_user') }}">
             <div class="row">
                 <div class="input-field">
-                    <input name="user" type="text" class="validate"/>
+                    <input name="user" type="text" class="validate" />
                     <label for="user" class="active">Username</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field">
-                    <input name="passwd" type="password" class="validate"/>
+                    <input name="passwd" type="password" class="validate" />
                     <label for="passwd">Password</label>
                 </div>
             </div>
             <div class="row">
-                <div class="col s6">
+                <div class="col s4 push-s4">
                     <button class="btn waves-effect waves-light teal lighten-1" type="submit">Submit</button>
                 </div>
-                <div class="col s6">
-                    <a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('register_user') }}">Register</a>
-                </div>
             </div>
-            </div>
-        </form>
     </div>
-    </div>
+    </form>
+</div>
+</div>
 {% endblock %}
