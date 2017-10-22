@@ -15,7 +15,7 @@ def initdb_command():
 
 @app.route('/')
 def home():
-    return render_template('layout.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['GET','POST'])
 def register_user():
@@ -25,13 +25,13 @@ def register_user():
         entries = database.query_db('select username from users')
         for entry in entries:
             if request.form['user'] == entry['username']:
-                error = 'User already taken'
+                flash('User already taken')
                 return render_template('register.html', error=error)
     
         db = database.get_db()
         db.execute('insert into users (username, hash) values (?, ?)',[request.form['user'], request.form['passwd']])
         db.commit()
-        flash("Registration succesfull")
+        flash("Registration was succesfully completed!")
         return redirect(url_for('login', entries=entries))
 
     return render_template('register.html', error=error)
@@ -41,7 +41,7 @@ def login():
     error = None
 
     if 'logged_in' in session:
-        error = 'Already Logged in'
+        flash('You are already logged in!')
         return redirect(url_for('home', error=error))
 
     if request.method == 'POST':
@@ -55,7 +55,7 @@ def login():
                 else:
                     session['logged_in']=True
                     session['username']=request.form['user']
-                    flash('You were logged in')
+                    flash('You were succesfully logged in!')
                     return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
