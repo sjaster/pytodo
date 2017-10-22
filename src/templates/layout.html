@@ -3,40 +3,54 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <!--Import materialize.css-->
 <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}" media="screen,projection" />
+<!-- Import own css file -->
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/expand.css') }}" media="screen,projection"/>
 <!--Let browser know website is optimized for mobile-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<div>
 <nav>
     <div class="nav-wrapper indigo darken-4">
         <a href="{{ url_for('home') }}" class="brand-logo center">Pytodo</a>
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        {% if session.logged_in %}
         <ul class="left hide-on-med-and-down">
             <li><a href="#"><i class="material-icons">add</i></a></li>
             <li><a href="#"><i class="material-icons">view_modules</i></a></li>
         </ul>
+        {% endif %}
         <ul class="right hide-on-med-and-down">
             {% if not session.logged_in %}
             <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
             {% else %}
-            <li><a href="#"><i class="material-icons">person</i>{{ session.username }}</a></li>
+            <li><a href="#"><i class="material-icons left">person</i>{{ session.username }}</a></li>
             <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
         </ul>
         <ul class="side-nav indigo darken-4" id="mobile-demo">
             <h4 class="white-text center">Menu</h1>
+            {% if session.logged_in %}
             <li><a class="white-text" href="#">Test1</a></li>
             <li><a class="white-text" href="#">Test2</a></li>
             <li class="center"><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+            <li class="center"><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
         </ul>
     </div>
 </nav>
-    {% for message in get_flashed_messages() %}
-        <div>{{ message }}</div>
-    {% endfor %}
-    {% block body %}{% endblock %}
-</div>
+{% block body %}{% endblock %}
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col s4 push-s4 center">
+             {% for message in get_flashed_messages() %}  
+            <div class="col s12 card-panel teal lighten-1 white-text">{{ message }}</div>
+             {% endfor %}
+        </div>
+    </div>
+</div>    
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
 <!-- Import script for working navbar collapsing -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+</body>

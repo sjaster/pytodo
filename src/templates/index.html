@@ -1,0 +1,40 @@
+{% extends "layout.html" %} 
+{% block body %}
+{% if session.logged_in %}
+<div class="row">
+    <div class="col s4">
+        <div class="card medium">
+            <div class="card-image">
+                <img src="../static/img/card1.jpg">
+                <span class="card-title">User Example</span>
+            </div>
+            <div class="card-content">
+                <p>This in an example information card!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col s4">
+        <div class="card medium">
+            <div class="card-image">
+                <img src="../static/img/card2.jpg">
+                <span class="card-title">User Example</span>
+            </div>
+            <div class="card-content">
+                <p>This in an example information card!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col s4">
+        <div class="card medium">
+            <div class="card-image">
+                <img src="../static/img/card3.jpg">
+                <span class="card-title">User Example</span>
+            </div>
+            <div class="card-content">
+                <p>This in an example information card!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
