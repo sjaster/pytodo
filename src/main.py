@@ -22,18 +22,28 @@ def initdb_command():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        # flash(request.form)
-        card = Card.query.get(request.form['card_id'])
-        card.title = request.form['edit_title']
-        card.content = request.form['edit_content']
-        db.session.commit()
+        if 'card_id_del' in request.form.keys():
+            del_card = Card.query.filter_by(id=request.form['card_id_del']).delete()
+            db.session.commit()
 
-    if session['logged_in']:
-        users = User.query.filter_by(username=session['username'])
-        for user in users:
-            user_id = user.id
-        cards = Card.query.filter_by(user_id=user_id)
-        return render_template('index.html', cards=cards)
+        elif 'card_id_archive' in request.form.keys():
+            card = Card.query.get(request.form['card_id_archive'])
+            card.state = 'DONE'
+            db.session.commit()
+
+        elif 'card_id' in request.form.keys():
+            card = Card.query.get(request.form['card_id'])
+            card.title = request.form['edit_title']
+            card.content = request.form['edit_content']
+            db.session.commit()
+
+    if 'logged_in' in session:
+        if session['logged_in']:
+            users = User.query.filter_by(username=session['username'])
+            for user in users:
+                user_id = user.id
+            cards = Card.query.filter_by(user_id=user_id, state='ACTIVE')
+            return render_template('index.html', cards=cards)
 
     return render_template('index.html')
 
