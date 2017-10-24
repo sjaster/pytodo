@@ -18,11 +18,7 @@ app.config.update(dict(SQLALCHEMY_TRACK_MODIFICATIONS='False'))
 
 migrate = Migrate(app, db)
 db.init_app(app)
-
-@app.cli.command('initdb')
-def initdb_command():
-    db.create_all(app=app)
-    print('Initialized the database.')
+db.create_all(app=app)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
