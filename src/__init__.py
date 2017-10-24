@@ -1,2 +1,2 @@
 from .main import *
-from .models import User 
+from .models import User, Card
