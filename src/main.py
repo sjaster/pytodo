@@ -2,10 +2,11 @@ from flask import Flask, request, session, redirect, url_for, render_template, f
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
-from .models import User, Card
-from pytodo.models import db
 from uuid import uuid4
 from hashlib import sha256
+from flask_migrate import Migrate
+from .models import User, Card
+from pytodo.models import db
 
 
 app = Flask(__name__)
@@ -15,6 +16,7 @@ app.config.update(dict(SECRET_KEY='dev_key'))
 app.config.update(dict(SQLALCHEMY_DATABASE_URI='sqlite:////pytodo/db/db.sqlite3'))
 app.config.update(dict(SQLALCHEMY_TRACK_MODIFICATIONS='False'))
 
+migrate = Migrate(app, db)
 db.init_app(app)
 
 @app.cli.command('initdb')
