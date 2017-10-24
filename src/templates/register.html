@@ -2,8 +2,6 @@
 {% block body %}
 <div class="container">
 <div class="row">
-    {% if error %}
-    <p>{{ error }}</p>{% endif %}
     <form class="col s4 push-s4 center" method="post" action="{{ url_for('register_user') }}">
         <div class="row">
             <div class="input-field">
@@ -17,6 +15,13 @@
                 <label for="passwd" class="white-text">Password</label>
             </div>
         </div>
+        {% if error %}
+        <div class="row">
+            <div class="col s12 card-panel orange accent-3 flash-panel">
+                <span class="white-text"><b>An error occured while login you in!</b><br/>{{ error }}</span>
+            </div>
+        </div>
+        {% endif %}
         <div class="row">
             <div class="col s4 push-s4">
                 <button class="btn waves-effect waves-light teal lighten-1" type="submit">Submit</button>
