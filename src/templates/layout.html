@@ -13,7 +13,7 @@
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
         {% if session.logged_in %}
         <ul class="left hide-on-med-and-down">
-            <li><a href="#"><i class="material-icons">add</i></a></li>
+            <li><a href="{{ url_for('create_card') }}"><i class="material-icons">add</i></a></li>
             <li><a href="#"><i class="material-icons">view_modules</i></a></li>
         </ul>
         {% endif %}

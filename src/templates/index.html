@@ -36,5 +36,29 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="row">
+    {% for card in cards %}
+    <div class="col s4">
+        <div class="card large hoverable">
+            <div class="card-image waves-effect waves-block waves-light">
+                <img src="../static/img/card2.jpg">
+            </div>
+            <div class="card-content">
+                <span class="card-title">{{ card.title }}<a class="btn-floating waves-effect waves-light teal lighten-2 right"><i class="material-icons activator">edit</i></a></span>
+                <p>{{ card.content }}</p>
+            </div>
+            <div class="card-reveal">
+                <form method="post" action="{{ url_for('home') }}">
+                    <p name="card_id" value="{{card.id}}"></p>
+                    <input name="title" type="text" class="validate" value="{{ card.title }}" required>
+                    <textarea name="content" type="text" class="materialize-textarea" required>{{ card.content }}</textarea>
+                    <button class="btn-floating waves-effect waves-light teal lighten-2 right" type="submit"><i class="material-icons">check</i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
 {% endblock %}

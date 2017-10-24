@@ -1,8 +1,8 @@
-from flask import Flask, request, session, redirect, url_for, render_template, flash
+from flask import Flask, request, session, redirect, url_for, render_template, flash, json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
-from .models import User
+from .models import User, Card
 from pytodo.models import db
 
 app = Flask(__name__)
@@ -19,12 +19,15 @@ def initdb_command():
     db.create_all(app=app)
     print('Initialized the database.')
 
-@app.route('/test')
-def design_test():
-    return render_template('test.html')
-
 @app.route('/')
 def home():
+    if session['logged_in']:
+        users = User.query.filter_by(username=session['username'])
+        for user in users:
+            user_id = user.id
+        cards = Card.query.filter_by(user_id=user_id)
+        return render_template('index.html', cards=cards)
+
     return render_template('index.html')
 
 @app.route('/register', methods=['GET','POST'])
@@ -75,3 +78,16 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('login'))
+
+@app.route('/create', methods=['GET', 'POST'])
+def create_card():
+    if request.method == 'POST':
+        users = User.query.filter_by(username=session['username'])
+        for user in users:
+            user_id = user
+        new_card = Card(title=request.form['title'], content=request.form['content'], state='ACTIVE', user_id=user_id.id)
+        db.session.add(new_card)
+        db.session.commit()
+        return redirect(url_for('home'))
+
+    return render_template('create_card.html')
