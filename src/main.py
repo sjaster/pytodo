@@ -4,6 +4,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from .models import User, Card
 from pytodo.models import db
+from uuid import uuid4
+from hashlib import sha256
+
 
 app = Flask(__name__)
 
@@ -23,7 +26,7 @@ def initdb_command():
 def home():
     if request.method == 'POST':
         if 'card_id_del' in request.form.keys():
-            del_card = Card.query.filter_by(id=request.form['card_id_del']).delete()
+            Card.query.filter_by(id=request.form['card_id_del']).delete()
             db.session.commit()
 
         elif 'card_id_archive' in request.form.keys():
@@ -52,7 +55,8 @@ def register_user():
     error = None
 
     if request.method == 'POST':
-        user = User(username=request.form['user'], password=request.form['passwd'])
+        hashed_pw = hash_passwd(request.form['passwd'])
+        user = User(username=request.form['user'], password=hashed_pw)
         db.session.add(user)
         try: 
             db.session.commit()
@@ -80,7 +84,7 @@ def login():
             
         match = User.query.filter_by(username=request.form['user'])
         for entry in match:
-            if request.form['passwd'] != entry.password:
+            if check_passwd(entry.password, request.form['passwd']):
                 error = 'Invalid password'
             else:
                 session['logged_in']=True
@@ -89,6 +93,15 @@ def login():
                 return redirect(url_for('home'))
 
     return render_template('login.html', error=error)
+
+
+def hash_passwd(passwd):
+    salt = uuid4().hex
+    return sha256(salt.encode() + passwd.encode()).hexdigest() + ":" + salt
+
+def check_passwd(hashed_pw, passwd):
+    password, salt = hashed_pw.split(":")
+    return passwd == sha256(salt.encode() + passwd.encode()).hexdigest()
 
 @app.route('/logout')
 def logout():
