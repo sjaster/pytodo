@@ -19,8 +19,15 @@ def initdb_command():
     db.create_all(app=app)
     print('Initialized the database.')
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        # flash(request.form)
+        card = Card.query.get(request.form['card_id'])
+        card.title = request.form['edit_title']
+        card.content = request.form['edit_content']
+        db.session.commit()
+
     if session['logged_in']:
         users = User.query.filter_by(username=session['username'])
         for user in users:

@@ -50,10 +50,13 @@
             </div>
             <div class="card-reveal">
                 <form method="post" action="{{ url_for('home') }}">
-                    <p name="card_id" value="{{card.id}}"></p>
-                    <input name="title" type="text" class="validate" value="{{ card.title }}" required>
-                    <textarea name="content" type="text" class="materialize-textarea" required>{{ card.content }}</textarea>
-                    <button class="btn-floating waves-effect waves-light teal lighten-2 right" type="submit"><i class="material-icons">check</i></button>
+                    <div class="input-field">
+                        <input name="edit_title" type="text" class="validate" value="{{ card.title }}" required>
+                    </div>
+                    <div class="input-field">
+                        <textarea name="edit_content" type="text" class="materialize-textarea" required>{{ card.content }}</textarea>
+                    </div>
+                    <button class="btn-floating waves-effect waves-light teal lighten-2 right" type="submit" name="card_id" value="{{ card.id }}"><i class="material-icons">check</i></button>
                 </form>
             </div>
         </div>
