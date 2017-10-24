@@ -6,12 +6,16 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(dict(SECRET_KEY='dev_key'))
 
-database = Database()
+database = Database(app)
 
 @app.cli.command('initdb')
 def initdb_command():
     database.init_db()
     print('Initialized the database.')
+
+@app.route('/test')
+def design_test():
+    return render_template('test.html')
 
 @app.route('/')
 def home():
