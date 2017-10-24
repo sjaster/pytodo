@@ -1,1 +1,2 @@
-from .main import app
+from .main import *
+from .models import User 
