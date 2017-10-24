@@ -11,12 +11,6 @@
     <div class="nav-wrapper indigo darken-4">
         <a href="{{ url_for('home') }}" class="brand-logo center">Pytodo</a>
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-        {% if session.logged_in %}
-        <ul class="left hide-on-med-and-down">
-            <li><a href="{{ url_for('create_card') }}"><i class="material-icons">add</i></a></li>
-            <li><a href="#"><i class="material-icons">view_modules</i></a></li>
-        </ul>
-        {% endif %}
         <ul class="right hide-on-med-and-down">
             {% if not session.logged_in %}
             <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
@@ -26,10 +20,8 @@
             {% endif %}
         </ul>
         <ul class="side-nav indigo darken-4" id="mobile-demo">
-            <h4 class="white-text center">Menu</h1>
+            <a href={{ url_for('home') }}><h4 class="white-text center">Menu</h4></a>
             {% if session.logged_in %}
-            <li><a class="white-text" href="#">Test1</a></li>
-            <li><a class="white-text" href="#">Test2</a></li>
             <li class="center"><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
             <li class="center"><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
@@ -46,7 +38,12 @@
              {% endfor %}
         </div>
     </div>
-</div>    
+</div>   
+{% if session.logged_in %}
+<div class="fixed-action-btn horizontal">
+    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right" href="{{ url_for('create_card') }}"><i class="material-icons">add</i></a>
+</div>
+{% endif %}
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
