@@ -31,7 +31,18 @@ $ docker-compose up
 Access through localhost:5000
 
 ---
+### Database Migrations
 
+If you want to alter the Database you can use the flask-migration package which is installed inside the Docker Container.
+
+To run a migration on the database the following steps are required.
+
+1. Change the Model Structure in `models.py` 
+2. Find the ID of your docker container with `docker ps`
+3. Run `docker exec <container-id> flask db migrate` to create a migration
+4. Run `docker exec <container-id> flask db upgrde` to apply the migration on the database
+
+---
 ## Project colorsheet based on materialize css colors
 
 ### Navbar
