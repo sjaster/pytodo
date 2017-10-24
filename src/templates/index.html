@@ -56,7 +56,13 @@
                     <div class="input-field">
                         <textarea name="edit_content" type="text" class="materialize-textarea" required>{{ card.content }}</textarea>
                     </div>
-                    <button class="btn-floating waves-effect waves-light teal lighten-2 right" type="submit" name="card_id" value="{{ card.id }}"><i class="material-icons">check</i></button>
+                    <div class="fixed-action-btn click-to-toggle"><a class="btn-floating btn teal lighten-1"><i class="material-icons">menu</i></a>
+                    <ul>
+                        <li><button class="btn-floating yellow darken-1" name="card_id_archive" value="{{ card.id }}" type="submit"><i class="material-icons">archive</i></button></li>
+                        <li><button class="btn-floating red lighten-1" name="card_id_del" value="{{ card.id }}" type="submit"><i class="material-icons">delete</i></button></li>
+                        <li><button class="btn-floating waves-effect waves-light teal lighten-2 right" name="card_id" value="{{ card.id }}" type="submit"><i class="material-icons">check</i></button></li>
+                    </ul>
+                    </div>
                 </form>
             </div>
         </div>

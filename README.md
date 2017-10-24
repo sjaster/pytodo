@@ -46,4 +46,23 @@ class="indigo darken-4"
 class="teal lighten-1"
 ```
 
+### FAB Subbuttons
+
+#### Delete Button
+
+```
+class="red lighten-1"
+```
+
+#### Archive Button
+
+```
+class="yellow darken-1"
+```
+
+#### Edit Button
+
+```
+class="teal lighten-2"
+```
 
