@@ -7,7 +7,10 @@ from hashlib import sha256
 from flask_migrate import Migrate
 from .models import User, Card
 from pytodo.models import db
+from os import makedirs, path
 
+if not path.exists('/pytodo/db'):
+    makedirs('/pytodo/db')
 
 app = Flask(__name__)
 
