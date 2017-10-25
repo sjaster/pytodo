@@ -1,0 +1,88 @@
+{% extends "layout.html" %} 
+{% block body %}
+{% if not session.logged_in %}
+<!-- <div class="row">
+    <div class="col s4">
+        <div class="card medium hoverable">
+            <div class="card-image">
+                <img src="../static/img/card1.jpg">
+                <span class="card-title">User Example</span>
+            </div>
+            <div class="card-content">
+                <p>This in an example information card!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col s4">
+        <div class="card medium hoverable">
+            <div class="card-image">
+                <img src="../static/img/card2.jpg">
+                <span class="card-title">User Example</span>
+            </div>
+            <div class="card-content">
+                <p>This in an example information card!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col s4">
+        <div class="card medium hoverable">
+            <div class="card-image">
+                <img src="../static/img/card3.jpg">
+                <span class="card-title">User Example</span>
+            </div>
+            <div class="card-content">
+                <p>This in an example information card!</p>
+            </div>
+        </div>
+    </div>
+</div> -->
+{% else %}
+<div class="row">
+    {% for card in cards %}
+    <div class="col s3">
+        <div class="card small hoverable blue-grey">
+            <div class="card-content">
+                <span class="card-title white-text">{{ card.title }}<a class="btn-floating waves-effect waves-light teal lighten-2 right"><i class="material-icons activator">edit</i></a></span>
+                <br/><div class="divider"></div><br/>
+                <p class="white-text">{{ card.content }}</p>
+            </div>
+            <div class="card-reveal">
+                <form method="post" action="{{ url_for('cards') }}">
+                    <div class="input-field">
+                        <input name="edit_title" type="text" class="validate" value="{{ card.title }}" required>
+                    </div>
+                    <div class="input-field">
+                        <textarea name="edit_content" type="text" class="materialize-textarea" required>{{ card.content }}</textarea>
+                    </div>
+                    <div class="fixed-action-btn click-to-toggle"><a class="btn-floating btn teal lighten-1"><i class="material-icons">menu</i></a>
+                    <ul>
+                        <li><button class="btn-floating waves-effect waves-light yellow darken-1" name="card_id_archive" value="{{ card.id }}" type="submit"><i class="material-icons">archive</i></button></li>
+                        <li><button class="btn-floating waves-effect waves-light red lighten-1" name="card_id_del" value="{{ card.id }}" type="submit"><i class="material-icons">delete</i></button></li>
+                        <li><button class="btn-floating waves-effect waves-light teal lighten-2 right" name="card_id" value="{{ card.id }}" type="submit"><i class="material-icons">check</i></button></li>
+                    </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="fixed-action-btn click-to-toggle">
+    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right">
+        <i class="material-icons">menu</i>
+    </a>
+    <ul>
+        <li>
+            <a class="btn-floating waves-effect waves-light teal lighten-2 center" href="{{ url_for('subject_overview') }}">
+                <i class="material-icons">subject</i>
+            </a>
+        </li>
+        <li>
+            <a class="btn-floating waves-effect waves-light teal lighten-2" href="{{ url_for('create_card') }}">
+                <i class="material-icons">add</i>
+            </a>
+        </li>
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
