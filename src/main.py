@@ -80,7 +80,7 @@ def login():
             match = User.query.filter_by(username=request.form['user']).one()
         except NoResultFound:
             error = 'Invalid Username'
-            
+
         if check_passwd(match.password, request.form['passwd']):
             error = 'Invalid password'
         else:
@@ -124,7 +124,8 @@ def subject_overview():
 
     if request.method == 'POST':
         if 'subject_del' in request.form.keys():
-            subjects = Subject.query.filter_by(id=request.form['subject_del']).delete()
+            subject = db.session.query(Subject).filter_by(id=request.form['subject_del']).first()
+            db.session.delete(subject)
             db.session.commit()
 
     if 'logged_in' in session:

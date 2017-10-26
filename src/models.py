@@ -30,4 +30,4 @@ class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    cards = db.relationship('Card', backref='subjects', lazy=True)
+    cards = db.relationship('Card', backref='subjects', lazy=True, cascade='delete')
