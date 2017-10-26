@@ -12,26 +12,37 @@
             </div>
         </div>
         <div class="row">
-            <div class="col s4 push-s4">
-                <button class="btn waves-effect waves-light teal lighten-1" type="submit">Submit</button>
+            <div class="col s6 center">
+                <button class="btn waves-effect waves-light teal lighten-1" name="subj_create" type="submit">Submit</button>
+            </div>
+            <div class="col s6 center">
+                <button class="btn waves-effect waves-light teal lighten-1" name="subj_create_cancel" type="submit" formnovalidate>Cancel</button>
             </div>
         </div>
     </form>
-</div>
     {% endif %}
+</div>
+{% for subject in subjects %}
 <div class="row">
-    <div class="collection">
-        {% for subject in subjects %}
-        <a href="#!" class="collection-item">{{ subject.name }}</a>
-        {% endfor %}
+    <div class="col s4 push-s4">
+    <div class="card">
+        <div class="card-content">
+            <form method="post" action="{{ url_for('subject_overview') }}">
+                <a href="#!">{{ subject.name }}</a>
+                <button class="btn-floating waves-effect waves-light red lighten-1 right" name="subject_del" value="{{ subject.id }}" type="submit"><i class="material-icons">delete</i></button>
+            </form>
+        </div>
     </div>
-    <div class="fixed-action-btn click-to-toggle">
-        <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"><i class="material-icons">menu</i></a>
-        <ul>
-            <li><a class="btn-floating waves-effect waves-light teal lighten-2 center" href="{{ url_for('cards') }}"><i class="material-icons">event_note</i></a></li>
-            <li><a class="btn-floating waves-effect waves-light teal lighten-2" href="{{ url_for('create_subject') }}"><i class="material-icons">add</i></a></li>
-        </ul>
     </div>
+</div>
+{% endfor %}
+<div class="fixed-action-btn click-to-toggle">
+    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"><i class="material-icons">menu</i></a>
+    <ul>
+        <li><a class="btn-floating waves-effect waves-light teal lighten-2 center" href="{{ url_for('cards') }}"><i class="material-icons">event_note</i></a></li>
+        <li><a class="btn-floating waves-effect waves-light teal lighten-2" href="{{ url_for('create_subject') }}"><i class="material-icons">add</i></a></li>
+    </ul>
+</div>
 </div>
 </div>
 {% endif %}
