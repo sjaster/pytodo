@@ -43,10 +43,8 @@ def cards():
 
     if 'logged_in' in session:
         if session['logged_in']:
-            users = User.query.filter_by(username=session['username'])
-            for user in users:
-                user_id = user.id
-            cards = Card.query.filter_by(user_id=user_id, state='ACTIVE')
+            user = User.query.filter_by(username=session['username']).one()
+            cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
             return render_template('cards.html', cards=cards)
 
     return render_template('login.html')
@@ -83,15 +81,13 @@ def login():
         except NoResultFound:
             error = 'Invalid Username'
             
-        match = User.query.filter_by(username=request.form['user'])
-        for entry in match:
-            if check_passwd(entry.password, request.form['passwd']):
-                error = 'Invalid password'
-            else:
-                session['logged_in']=True
-                session['username']=request.form['user']
-                flash('You were succesfully logged in!')
-                return redirect(url_for('subject_overview'))
+        if check_passwd(match.password, request.form['passwd']):
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            session['username'] = request.form['user']
+            flash('You were succesfully logged in!')
+            return redirect(url_for('subject_overview'))
 
     return render_template('login.html', error=error)
 
@@ -112,29 +108,32 @@ def logout():
 
 @app.route('/cards/create', methods=['GET', 'POST'])
 def create_card():
-    users = User.query.filter_by(username=session['username'])
-    for user in users:
-        user_id = user
+    user = User.query.filter_by(username=session['username']).one()
     
     if request.method == 'POST':
-        new_card = Card(title=request.form['title'], content=request.form['content'], state='ACTIVE', user_id=user_id.id, subject_id=request.form['subject_id'])
+        new_card = Card(title=request.form['title'], content=request.form['content'], state='ACTIVE', user_id=user.id, subject_id=request.form['subject_id'])
         db.session.add(new_card)
         db.session.commit()
         return redirect(url_for('cards'))
 
-    subjects = Subject.query.filter_by(user_id=user_id.id)
-
+    subjects = Subject.query.filter_by(user_id=user.id)
     return render_template('create_card.html', subjects=subjects)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def subject_overview():
 
-    if session['logged_in']:
-        users = User.query.filter_by(username=session['username'])
-        for user in users:
-            user_id = user.id
-        subjects = Subject.query.filter_by(user_id=user_id)
-        return render_template('index.html', subjects=subjects)
+    if request.method == 'POST':
+        if 'subject_del' in request.form.keys():
+            subjects = Subject.query.filter_by(id=request.form['subject_del']).delete()
+            db.session.commit()
+
+    if 'logged_in' in session:
+        if session['logged_in']:
+            user = User.query.filter_by(username=session['username']).one()
+            subjects = Subject.query.filter_by(user_id=user.id)
+            return render_template('index.html', subjects=subjects)
+    else:
+        return render_template('login.html')
 
     return render_template('index.html')
 
@@ -143,12 +142,14 @@ def create_subject():
     session['create_subject'] = True
 
     if request.method == 'POST':
-        users = User.query.filter_by(username=session['username'])
-        for user in users:
-            user_id = user
-        new_subject = Subject(name=request.form['subject'], user_id=user_id.id)
-        db.session.add(new_subject)
-        db.session.commit()
-        session.pop('create_subject', None)
+        if 'subj_create' in request.form.keys():
+            user = User.query.filter_by(username=session['username']).one()
+            new_subject = Subject(name=request.form['subject'], user_id=user.id)
+            db.session.add(new_subject)
+            db.session.commit()
+            session.pop('create_subject', None)
+
+        elif 'subj_create_cancel' in request.form.keys():
+            session.pop('create_subject', None)
         
     return redirect(url_for('subject_overview'))
