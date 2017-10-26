@@ -80,14 +80,15 @@ def login():
             match = User.query.filter_by(username=request.form['user']).one()
         except NoResultFound:
             error = 'Invalid Username'
+            return render_template('login.html', error=error)
 
         if check_passwd(match.password, request.form['passwd']):
-            error = 'Invalid password'
-        else:
             session['logged_in'] = True
             session['username'] = request.form['user']
             flash('You were succesfully logged in!')
             return redirect(url_for('subject_overview'))
+        else:
+            error = 'Invalid password'
 
     return render_template('login.html', error=error)
 
@@ -98,7 +99,7 @@ def hash_passwd(passwd):
 
 def check_passwd(hashed_pw, passwd):
     password, salt = hashed_pw.split(":")
-    return passwd == sha256(salt.encode() + passwd.encode()).hexdigest()
+    return password == sha256(salt.encode() + passwd.encode()).hexdigest()
 
 @app.route('/logout')
 def logout():
