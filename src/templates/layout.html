@@ -42,17 +42,15 @@
 </nav>
 </div>
 {% block body %}{% endblock %} 
-<div class="container">
-    <div class="row">
-        <div class="col s4 push-s4 center">
-            {% for message in get_flashed_messages() %}
-            <div class="col s12 card-panel teal lighten-1 white-text flash-panel">{{ message }}</div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
 <!-- Import script for basic materialize options -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/function.js') }}"></script>
+<script>
+    {% if get_flashed_messages() %}
+    {% for message in get_flashed_messages() %}
+    Materialize.toast('{{ message }}', 4000);
+    {% endfor %}
+    {% endif %}
+</script>
