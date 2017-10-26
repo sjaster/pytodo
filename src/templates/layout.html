@@ -7,22 +7,32 @@
 <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/expand.css') }}" media="screen,projection"/>
 <!--Let browser know website is optimized for mobile-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<div class="navbar-fixed">
-<nav>
+<div id='nav-fixed' class="navbar-fixed">
+<nav> 
     <div class="nav-wrapper indigo darken-4">
         <a href="{{ url_for('subject_overview') }}" class="brand-logo center">Pytodo</a>
-        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-        <ul class="right hide-on-med-and-down">
+        <a href="#" data-activates="mobile-demo" class="button-collapse" onclick="remove_fixed()"><i class="material-icons">menu</i></a>
+        <ul class="hide-on-med-and-down">
             {% if not session.logged_in %}
-            <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
+            <ul class="right">
+                <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
+            </ul>
             {% else %}
-            <li><a href="#"><i class="material-icons left">person</i>{{ session.username }}</a></li>
-            <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
+            <ul class="left">
+                <li><a href="{{ url_for('subject_overview') }}">Subject Overview</a></li>
+                <li><a href="{{ url_for('cards') }}">Card Overview</a></li>
+            </ul>
+            <ul class="right">
+                <li><a href="#"><i class="material-icons left">person</i>{{ session.username }}</a></li>
+                <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
             {% endif %}
         </ul>
         <ul class="side-nav indigo darken-4" id="mobile-demo">
-            <a href={{ url_for('subject_overview') }}><h4 class="white-text center">Menu</h4></a>
+            <a href="{{ url_for('subject_overview') }}"><h4 class="white-text center">Menu</h4></a>
             {% if session.logged_in %}
+            <li><a class="white-text" href="{{ url_for('subject_overview') }}">Subject Overview</a></li>
+            <li><a class="white-text" href="{{ url_for('cards') }}">Card Overview</a></li>
             <li class="center"><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
             <li class="center"><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('login') }}">Login</a></li>
@@ -44,5 +54,5 @@
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
-<!-- Import script for working navbar collapsing -->
-<script type="text/javascript" src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+<!-- Import script for basic materialize options -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/function.js') }}"></script>
