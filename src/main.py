@@ -153,3 +153,10 @@ def create_subject():
             session.pop('create_subject', None)
         
     return redirect(url_for('subject_overview'))
+
+@app.route('/<subject_name>/cards', methods=['GET'])
+def cards_by_subject(subject_name):
+
+    subject = Subject.query.filter_by(name=subject_name).one()
+    cards = Card.query.filter_by(subject_id=subject.id)
+    return render_template('cards.html', cards=cards)
