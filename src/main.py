@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from uuid import uuid4
 from hashlib import sha256
 from flask_migrate import Migrate
-from .models import User, Card, Subject
+from .models import User, Card, Subject, Context
 from pytodo.models import db
 from os import makedirs, path
 
@@ -22,6 +22,8 @@ app.config.update(dict(SQLALCHEMY_TRACK_MODIFICATIONS='False'))
 migrate = Migrate(app, db)
 db.init_app(app)
 db.create_all(app=app)
+
+context = Context()
 
 @app.route('/cards', methods=['GET', 'POST'])
 def cards():
@@ -45,9 +47,9 @@ def cards():
         if session['logged_in']:
             user = User.query.filter_by(username=session['username']).one()
             cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
-            return render_template('cards.html', cards=cards)
-
-    return render_template('login.html')
+            return render_template('cards.html', cards=cards, context=context.card)
+    else:
+        return render_template('login.html', context=context.login)
 
 @app.route('/register', methods=['GET','POST'])
 def register_user():
@@ -65,7 +67,7 @@ def register_user():
         flash('Registration succesull!')
         return redirect(url_for('login'))
 
-    return render_template('register.html')
+    return render_template('register.html', context=context.register)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -80,7 +82,7 @@ def login():
             match = User.query.filter_by(username=request.form['user']).one()
         except NoResultFound:
             error = 'Invalid Username'
-            return render_template('login.html', error=error)
+            return render_template('login.html', error=error, context=context.login)
 
         if check_passwd(match.password, request.form['passwd']):
             session['logged_in'] = True
@@ -90,7 +92,7 @@ def login():
         else:
             error = 'Invalid password'
 
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, context=context.login)
 
 
 def hash_passwd(passwd):
@@ -118,7 +120,7 @@ def create_card():
         return redirect(url_for('cards'))
 
     subjects = Subject.query.filter_by(user_id=user.id)
-    return render_template('create_card.html', subjects=subjects)
+    return render_template('create_card.html', subjects=subjects, context=context.card_create)
 
 @app.route('/', methods=['GET', 'POST'])
 def subject_overview():
@@ -133,11 +135,13 @@ def subject_overview():
         if session['logged_in']:
             user = User.query.filter_by(username=session['username']).one()
             subjects = Subject.query.filter_by(user_id=user.id)
-            return render_template('index.html', subjects=subjects)
-    else:
-        return render_template('login.html')
 
-    return render_template('index.html')
+            if 'create_subject' in session:
+                return render_template('index.html', subjects=subjects, context=context.subject_create)
+            else:
+                return render_template('index.html', subjects=subjects, context=context.subject)
+    else:
+        return render_template('login.html', context=context.login)
 
 @app.route('/subject/create', methods=['GET', 'POST'])
 def create_subject():
@@ -161,4 +165,4 @@ def cards_by_subject(subject_name):
 
     subject = Subject.query.filter_by(name=subject_name).one()
     cards = Card.query.filter_by(subject_id=subject.id)
-    return render_template('cards.html', cards=cards)
+    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name)

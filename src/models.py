@@ -15,7 +15,6 @@ class User(db.Model):
     subjects = db.relationship('Subject', backref='user', lazy=True)
     cards = db.relationship('Card', backref='user', lazy=True)
 
-
 class Card(db.Model):
     __tablename__ = 'card'
     id = db.Column(db.Integer, primary_key=True)
@@ -31,3 +30,13 @@ class Subject(db.Model):
     name = db.Column(db.String(32), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     cards = db.relationship('Card', backref='subjects', lazy=True, cascade='delete')
+
+
+class Context:
+    subject = 'Subject Overview'
+    subject_single = 'Subject - '
+    subject_create = 'Create new Subject'
+    card = 'Card Overview'
+    card_create = 'Create new Card'
+    register = 'Pytodo Register'
+    login = 'Pytodo Login'
