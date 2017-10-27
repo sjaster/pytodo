@@ -1,42 +1,6 @@
 {% extends "layout.html" %} 
 {% block body %}
-{% if not session.logged_in %}
-<!-- <div class="row">
-    <div class="col s4">
-        <div class="card medium hoverable">
-            <div class="card-image">
-                <img src="../static/img/card1.jpg">
-                <span class="card-title">User Example</span>
-            </div>
-            <div class="card-content">
-                <p>This in an example information card!</p>
-            </div>
-        </div>
-    </div>
-    <div class="col s4">
-        <div class="card medium hoverable">
-            <div class="card-image">
-                <img src="../static/img/card2.jpg">
-                <span class="card-title">User Example</span>
-            </div>
-            <div class="card-content">
-                <p>This in an example information card!</p>
-            </div>
-        </div>
-    </div>
-    <div class="col s4">
-        <div class="card medium hoverable">
-            <div class="card-image">
-                <img src="../static/img/card3.jpg">
-                <span class="card-title">User Example</span>
-            </div>
-            <div class="card-content">
-                <p>This in an example information card!</p>
-            </div>
-        </div>
-    </div>
-</div> -->
-{% else %}
+{% if session.logged_in %}
 <div class="row">
     {% for card in cards %}
     <div class="col s3">
@@ -67,22 +31,8 @@
     </div>
     {% endfor %}
 </div>
-<div class="fixed-action-btn click-to-toggle">
-    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right">
-        <i class="material-icons">menu</i>
-    </a>
-    <ul>
-        <li>
-            <a class="btn-floating waves-effect waves-light teal lighten-2 center" href="{{ url_for('subject_overview') }}">
-                <i class="material-icons">subject</i>
-            </a>
-        </li>
-        <li>
-            <a class="btn-floating waves-effect waves-light teal lighten-2" href="{{ url_for('create_card') }}">
-                <i class="material-icons">add</i>
-            </a>
-        </li>
-    </ul>
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"  href="{{ url_for('create_card') }}"><i class="material-icons">add</i></a>
 </div>
 {% endif %}
 {% endblock %}

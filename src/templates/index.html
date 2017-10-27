@@ -36,12 +36,8 @@
     </div>
 </div>
 {% endfor %}
-<div class="fixed-action-btn click-to-toggle">
-    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"><i class="material-icons">menu</i></a>
-    <ul>
-        <li><a class="btn-floating waves-effect waves-light teal lighten-2 center" href="{{ url_for('cards') }}"><i class="material-icons">event_note</i></a></li>
-        <li><a class="btn-floating waves-effect waves-light teal lighten-2" href="{{ url_for('create_subject') }}"><i class="material-icons">add</i></a></li>
-    </ul>
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"  href="{{ url_for('create_subject') }}"><i class="material-icons">add</i></a>
 </div>
 </div>
 </div>

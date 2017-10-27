@@ -1,4 +1,3 @@
 Flask
-Redis
 Flask-SQLAlchemy
 Flask-Migrate

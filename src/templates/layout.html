@@ -10,7 +10,7 @@
 <div id='nav-fixed' class="navbar-fixed">
 <nav> 
     <div class="nav-wrapper indigo darken-4">
-        <a href="{{ url_for('subject_overview') }}" class="brand-logo center">{{ context }}</a>
+        <a class="brand-logo center">{{ context }}</a>
         <a href="#" data-activates="mobile-demo" class="button-collapse" onclick="remove_fixed()"><i class="material-icons">menu</i></a>
         <ul class="hide-on-med-and-down">
             {% if not session.logged_in %}
