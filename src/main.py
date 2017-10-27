@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from .models import User, Card, Subject, Context
 from pytodo.models import db
 from os import makedirs, path
+from functools import wraps
 
 if not path.exists('/pytodo/db'):
     makedirs('/pytodo/db')
@@ -25,7 +26,17 @@ db.create_all(app=app)
 
 context = Context()
 
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not 'logged_in' in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/cards', methods=['GET', 'POST'])
+@login_required
 def cards():
     if request.method == 'POST':
         if 'card_id_del' in request.form.keys():
@@ -43,13 +54,9 @@ def cards():
             card.content = request.form['edit_content']
             db.session.commit()
 
-    if 'logged_in' in session:
-        if session['logged_in']:
-            user = User.query.filter_by(username=session['username']).one()
-            cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
-            return render_template('cards.html', cards=cards, context=context.card)
-    else:
-        return render_template('login.html', context=context.login)
+    user = User.query.filter_by(username=session['username']).one()
+    cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
+    return render_template('cards.html', cards=cards, context=context.card)
 
 @app.route('/register', methods=['GET','POST'])
 def register_user():
@@ -75,7 +82,7 @@ def login():
 
     if 'logged_in' in session:
         flash('You are already logged in!')
-        return redirect(url_for('subject_overview', error=error))
+        return redirect(url_for('subject_overview'))
 
     if request.method == 'POST':
         try:
@@ -104,12 +111,14 @@ def check_passwd(hashed_pw, passwd):
     return password == sha256(salt.encode() + passwd.encode()).hexdigest()
 
 @app.route('/logout')
+@login_required
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('login'))
 
 @app.route('/cards/create', methods=['GET', 'POST'])
+@login_required
 def create_card():
     user = User.query.filter_by(username=session['username']).one()
     
@@ -123,6 +132,7 @@ def create_card():
     return render_template('create_card.html', subjects=subjects, context=context.card_create)
 
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def subject_overview():
 
     if request.method == 'POST':
@@ -131,19 +141,16 @@ def subject_overview():
             db.session.delete(subject)
             db.session.commit()
 
-    if 'logged_in' in session:
-        if session['logged_in']:
-            user = User.query.filter_by(username=session['username']).one()
-            subjects = Subject.query.filter_by(user_id=user.id)
+    user = User.query.filter_by(username=session['username']).one()
+    subjects = Subject.query.filter_by(user_id=user.id)
 
-            if 'create_subject' in session:
-                return render_template('index.html', subjects=subjects, context=context.subject_create)
-            else:
-                return render_template('index.html', subjects=subjects, context=context.subject)
+    if 'create_subject' in session:
+        return render_template('index.html', subjects=subjects, context=context.subject_create)
     else:
-        return render_template('login.html', context=context.login)
+        return render_template('index.html', subjects=subjects, context=context.subject)
 
 @app.route('/subject/create', methods=['GET', 'POST'])
+@login_required
 def create_subject():
     session['create_subject'] = True
 
@@ -160,9 +167,40 @@ def create_subject():
         
     return redirect(url_for('subject_overview'))
 
-@app.route('/<subject_name>/cards', methods=['GET'])
+@app.route('/<subject_name>/cards', methods=['GET', 'POST'])
+@login_required
 def cards_by_subject(subject_name):
+    if request.method == 'POST':
+        if 'card_id_del' in request.form.keys():
+            Card.query.filter_by(id=request.form['card_id_del']).delete()
+            db.session.commit()
+
+        elif 'card_id_archive' in request.form.keys():
+            card = Card.query.get(request.form['card_id_archive'])
+            card.state = 'DONE'
+            db.session.commit()
+
+        elif 'card_id' in request.form.keys():
+            card = Card.query.get(request.form['card_id'])
+            card.title = request.form['edit_title']
+            card.content = request.form['edit_content']
+            db.session.commit()
 
     subject = Subject.query.filter_by(name=subject_name).one()
     cards = Card.query.filter_by(subject_id=subject.id)
-    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name)
+    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name, subject_name=subject.name)
+
+@app.route('/<subject_name>/cards/create', methods=['GET', 'POST'])
+@login_required
+def create_card_by_subject(subject_name):
+    user = User.query.filter_by(username=session['username']).one()
+
+    if request.method == 'POST':
+        new_card = Card(title=request.form['title'], content=request.form['content'],state='ACTIVE', user_id=user.id, subject_id=request.form['subject_id'])
+        db.session.add(new_card)
+        db.session.commit()
+        return redirect(url_for('cards_by_subject', subject_name=subject_name))
+
+    subjects = Subject.query.filter_by(user_id=user.id)
+    return render_template('create_card.html',subjects=subjects, subject_name=subject_name)
+
