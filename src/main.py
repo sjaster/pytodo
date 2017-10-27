@@ -191,9 +191,12 @@ def cards_by_subject(subject_name):
             card.content = request.form['edit_content']
             db.session.commit()
 
+    user = User.query.filter_by(username=session['username']).one()
+    subjects = Subject.query.filter_by(user_id=user.id)
+
     subject = Subject.query.filter_by(name=subject_name).one()
     cards = Card.query.filter_by(subject_id=subject.id)
-    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name, subject_name=subject.name)
+    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name, subject_name=subject.name, subjects=subjects)
 
 @app.route('/<subject_name>/cards/create', methods=['GET', 'POST'])
 @login_required
