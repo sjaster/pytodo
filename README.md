@@ -5,7 +5,7 @@ Web Interface based on python and flask for managing tasks
 
 ---
 
-## Deployment
+## Development
 Light Deployment with Docker and Docker-Compose
 
 ### Install Dependencies
@@ -40,7 +40,7 @@ To run a migration on the database the following steps are required.
 1. Change the Model Structure in `models.py` 
 2. Find the ID of your docker container with `docker ps`
 3. Run `docker exec <container-id> flask db migrate` to create a migration
-4. Run `docker exec <container-id> flask db upgrde` to apply the migration on the database
+4. Run `docker exec <container-id> flask db upgrade` to apply the migration on the database
 
 ---
 ## Project colorsheet based on materialize css colors
@@ -77,7 +77,7 @@ class="yellow darken-1"
 class="teal lighten-2"
 ```
 
-### Card Backgroud Colo
+### Card Background Colors
 
 ```
 class="blue-grey"
