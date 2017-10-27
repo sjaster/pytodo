@@ -11,7 +11,11 @@
                 <p class="white-text">{{ card.content }}</p>
             </div>
             <div class="card-reveal">
+                {% if subject_name is defined %}
+                <form method="post" action="{{ url_for('cards_by_subject',subject_name=subject_name) }}">
+                {% else %}
                 <form method="post" action="{{ url_for('cards') }}">
+                {% endif %}
                     <div class="input-field">
                         <input name="edit_title" type="text" class="validate" value="{{ card.title }}" required>
                     </div>
@@ -32,7 +36,7 @@
     {% endfor %}
 </div>
 <div class="fixed-action-btn">
-    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"  href="{{ url_for('create_card') }}"><i class="material-icons">add</i></a>
+    <a class="btn-floating btn-large waves-effect waves-light teal lighten-1 right"  href="{{ url_for('create_card_by_subject',subject_name=subject_name) }}"><i class="material-icons">add</i></a>
 </div>
 {% endif %}
 {% endblock %}
