@@ -35,32 +35,21 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/cards', methods=['GET', 'POST'])
-@login_required
-def cards():
-    if request.method == 'POST':
-        if 'card_id_del' in request.form.keys():
-            Card.query.filter_by(id=request.form['card_id_del']).delete()
-            db.session.commit()
+def hash_passwd(passwd):
+    salt = uuid4().hex
+    return sha256(salt.encode() + passwd.encode()).hexdigest() + ":" + salt
 
-        elif 'card_id_archive' in request.form.keys():
-            card = Card.query.get(request.form['card_id_archive'])
-            card.state = 'DONE'
-            db.session.commit()
-
-        elif 'card_id' in request.form.keys():
-            card = Card.query.get(request.form['card_id'])
-            card.title = request.form['edit_title']
-            card.content = request.form['edit_content']
-            db.session.commit()
-
-    user = User.query.filter_by(username=session['username']).one()
-    cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
-    return render_template('cards.html', cards=cards, context=context.card)
+def check_passwd(hashed_pw, passwd):
+    password, salt = hashed_pw.split(":")
+    return password == sha256(salt.encode() + passwd.encode()).hexdigest()
 
 @app.route('/register', methods=['GET','POST'])
 def register_user():
     error = None
+
+    if 'logged_in' in session:
+        flash('You already have an account!')
+        return redirect(url_for('subject_overview'))
 
     if request.method == 'POST':
         hashed_pw = hash_passwd(request.form['passwd'])
@@ -101,21 +90,36 @@ def login():
 
     return render_template('login.html', error=error, context=context.login)
 
-
-def hash_passwd(passwd):
-    salt = uuid4().hex
-    return sha256(salt.encode() + passwd.encode()).hexdigest() + ":" + salt
-
-def check_passwd(hashed_pw, passwd):
-    password, salt = hashed_pw.split(":")
-    return password == sha256(salt.encode() + passwd.encode()).hexdigest()
-
 @app.route('/logout')
 @login_required
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('login'))
+
+@app.route('/cards', methods=['GET', 'POST'])
+@login_required
+def cards():
+    if request.method == 'POST':
+        if 'card_id_del' in request.form.keys():
+            Card.query.filter_by(id=request.form['card_id_del']).delete()
+            db.session.commit()
+
+        elif 'card_id_archive' in request.form.keys():
+            card = Card.query.get(request.form['card_id_archive'])
+            card.state = 'DONE'
+            db.session.commit()
+
+        elif 'card_id' in request.form.keys():
+            card = Card.query.get(request.form['card_id'])
+            card.title = request.form['edit_title']
+            card.content = request.form['edit_content']
+            db.session.commit()
+
+    user = User.query.filter_by(username=session['username']).one()
+    cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
+    subjects = Subject.query.filter_by(user_id=user.id)
+    return render_template('cards.html', cards=cards, subjects=subjects, context=context.card)
 
 @app.route('/cards/create', methods=['GET', 'POST'])
 @login_required
