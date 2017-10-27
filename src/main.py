@@ -114,6 +114,7 @@ def cards():
             card = Card.query.get(request.form['card_id'])
             card.title = request.form['edit_title']
             card.content = request.form['edit_content']
+            card.subject_id = request.form['subject_id']
             db.session.commit()
 
     user = User.query.filter_by(username=session['username']).one()
