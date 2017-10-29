@@ -24,8 +24,29 @@
             </ul>
             {% else %}
             <ul class="left">
+                {% if request_path == '/' %}
+                <li class="active"><a class="dropdown-button" href="{{ url_for('subject_overview') }}" data-activates="subjects">Subject Overview<i class="material-icons right">arrow_drop_down</i></a></li>
+                {% else %}
                 <li><a class="dropdown-button" href="{{ url_for('subject_overview') }}" data-activates="subjects">Subject Overview<i class="material-icons right">arrow_drop_down</i></a></li>
+                {% endif %}
+                {% if request_path == '/cards' %}
+                <li class="active"><a href="{{ url_for('cards') }}">Card Overview</a></li>
+                {% else %}
                 <li><a href="{{ url_for('cards') }}">Card Overview</a></li>
+                {% endif %}
+                {% if '/cards' in request_path or request_path == '/' %}
+                <li>
+                    <form>
+                        <div class="input-field">
+                            <input class="white-text indigo darken-4" id="search" type="search" required>
+                            <label class="label-icon" for="search">
+                                <i class="material-icons white-text icon-search-bar">search</i>
+                            </label>
+                            <i class="material-icons">close</i>
+                        </div>
+                    </form>
+                </li>
+                {% endif %}
             </ul>
             <ul class="right">
                 <li><a href="#"><i class="material-icons left">person</i>{{ session.username }}</a></li>

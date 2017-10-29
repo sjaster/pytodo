@@ -120,7 +120,7 @@ def cards():
     user = User.query.filter_by(username=session['username']).one()
     cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
     subjects = Subject.query.filter_by(user_id=user.id)
-    return render_template('cards.html', cards=cards, subjects=subjects, context=context.card)
+    return render_template('cards.html', cards=cards, subjects=subjects, context=context.card, request_path=request.path)
 
 @app.route('/cards/create', methods=['GET', 'POST'])
 @login_required
@@ -152,7 +152,7 @@ def subject_overview():
     if 'create_subject' in session:
         return render_template('index.html', subjects=subjects, context=context.subject_create)
     else:
-        return render_template('index.html', subjects=subjects, context=context.subject)
+        return render_template('index.html', subjects=subjects, context=context.subject, request_path=request.path)
 
 @app.route('/subject/create', methods=['GET', 'POST'])
 @login_required
@@ -196,7 +196,7 @@ def cards_by_subject(subject_name):
 
     subject = Subject.query.filter_by(name=subject_name).one()
     cards = Card.query.filter_by(subject_id=subject.id)
-    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name, subject_name=subject.name, subjects=subjects)
+    return render_template('cards.html', cards=cards, context=context.subject_single + subject.name, subject_name=subject.name, subjects=subjects, request_path=request.path)
 
 @app.route('/<subject_name>/cards/create', methods=['GET', 'POST'])
 @login_required
