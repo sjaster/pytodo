@@ -34,15 +34,25 @@
                 {% else %}
                 <li><a href="{{ url_for('cards') }}">Card Overview</a></li>
                 {% endif %}
-                {% if '/cards' in request_path or request_path == '/' %}
+                {% if request_path == '/' %}
                 <li>
-                    <form>
+                    <form method="post" action="{{ url_for('subject_overview') }}">
                         <div class="input-field">
-                            <input class="white-text indigo darken-4" id="search" type="search" required>
+                            <input class="white-text indigo darken-4" id="search" name="search" type="search">
                             <label class="label-icon" for="search">
                                 <i class="material-icons white-text icon-search-bar">search</i>
                             </label>
-                            <i class="material-icons">close</i>
+                        </div>
+                    </form>
+                </li>
+                {% elif '/cards' in request_path %}
+                <li>
+                    <form method="post" action="{{ url_for('cards') }}">
+                        <div class="input-field">
+                            <input class="white-text indigo darken-4" id="search" name="search" type="search">
+                            <label class="label-icon" for="search">
+                                <i class="material-icons white-text icon-search-bar">search</i>
+                            </label>
                         </div>
                     </form>
                 </li>

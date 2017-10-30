@@ -100,6 +100,10 @@ def logout():
 @app.route('/cards', methods=['GET', 'POST'])
 @login_required
 def cards():
+    user = User.query.filter_by(username=session['username']).one()
+    cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
+    subjects = Subject.query.filter_by(user_id=user.id)
+
     if request.method == 'POST':
         if 'card_id_del' in request.form.keys():
             Card.query.filter_by(id=request.form['card_id_del']).delete()
@@ -117,9 +121,19 @@ def cards():
             card.subject_id = request.form['subject_id']
             db.session.commit()
 
-    user = User.query.filter_by(username=session['username']).one()
-    cards = Card.query.filter_by(user_id=user.id, state='ACTIVE')
-    subjects = Subject.query.filter_by(user_id=user.id)
+        if 'search' in request.form.keys():
+            search = request.form['search']
+            if search == '':
+                search_cards = cards
+            else:
+                search_cards = []
+                for card in cards:
+                    if str.lower(search) in str.lower(card.title):
+                        search_cards.append(card)
+    
+    if 'search' in request.form.keys():
+        return render_template('cards.html', cards=search_cards, subjects=subjects, context=context.card, request_path=request.path)
+
     return render_template('cards.html', cards=cards, subjects=subjects, context=context.card, request_path=request.path)
 
 @app.route('/cards/create', methods=['GET', 'POST'])
@@ -140,19 +154,32 @@ def create_card():
 @login_required
 def subject_overview():
 
+    user = User.query.filter_by(username=session['username']).one()
+    subjects = Subject.query.filter_by(user_id=user.id)
+
     if request.method == 'POST':
         if 'subject_del' in request.form.keys():
             subject = db.session.query(Subject).filter_by(id=request.form['subject_del']).first()
             db.session.delete(subject)
             db.session.commit()
-
-    user = User.query.filter_by(username=session['username']).one()
-    subjects = Subject.query.filter_by(user_id=user.id)
-
-    if 'create_subject' in session:
-        return render_template('index.html', subjects=subjects, context=context.subject_create)
+        
+        if 'search' in request.form.keys():
+            search = request.form['search']
+            if search == '':
+                search_subj = subjects
+            else:
+                search_subj = []
+                for subject in subjects:
+                    if str.lower(search) in str.lower(subject.name):
+                        search_subj.append(subject)
+    
+    if 'search' in request.form.keys():
+        return render_template('index.html', subjects=search_subj, context=context.subject, request_path=request.path)
     else:
-        return render_template('index.html', subjects=subjects, context=context.subject, request_path=request.path)
+        if 'create_subject' in session:
+            return render_template('index.html', subjects=subjects, context=context.subject_create)
+        else:
+            return render_template('index.html', subjects=subjects, context=context.subject, request_path=request.path)
 
 @app.route('/subject/create', methods=['GET', 'POST'])
 @login_required
