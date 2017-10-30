@@ -45,7 +45,7 @@
                         </div>
                     </form>
                 </li>
-                {% elif '/cards' in request_path %}
+                {% elif request_path == '/cards' %}
                 <li>
                     <form method="post" action="{{ url_for('cards') }}">
                         <div class="input-field">
