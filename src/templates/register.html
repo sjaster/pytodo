@@ -15,10 +15,13 @@
                 <label for="passwd" class="white-text">Password</label>
             </div>
         </div>
+        <div class="row">
+            {{ recaptcha }}
+        </div>
         {% if error %}
         <div class="row">
             <div class="col s12 card-panel orange accent-3 flash-panel">
-                <span class="white-text"><b>An error occured while login you in!</b><br/>{{ error }}</span>
+                <span class="white-text"><b>An error occured during the verification of your registration!</b><br/>{{ error }}</span>
             </div>
         </div>
         {% endif %}
