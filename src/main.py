@@ -112,7 +112,8 @@ def subject_overview():
 
     if request.method == 'POST':
         if 'subject_del' in request.form.keys():
-            Subject().delete(request.form['subject_del'])
+            if request.form['confirm_delete'] == 'true':
+                Subject().delete(request.form['subject_del'])
         
         if 'search' in request.form.keys():
             search = request.form['search']

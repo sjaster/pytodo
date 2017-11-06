@@ -29,7 +29,8 @@
         <div class="card-content">
             <form method="post" action="{{ url_for('subject_overview') }}">
                 <a href="{{ url_for('cards_by_subject',subject_name=subject.name) }}">{{ subject.name }}</a>
-                <button class="btn-floating waves-effect waves-light red lighten-1 right btn-subject-del" name="subject_del" value="{{ subject.id }}" type="submit"><i class="material-icons">delete</i></button>
+                <button class="btn-floating waves-effect waves-light red lighten-1 right btn-subject-del" name="subject_del" value="{{ subject.id }}" type="submit" onclick="check_delete_subject()"><i class="material-icons">delete</i></button>
+                <input name="confirm_delete" id="confirm_delete" value="" hidden/>
             </form>
         </div>
     </div>
