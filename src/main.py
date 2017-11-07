@@ -8,6 +8,10 @@ from functools import wraps
 if not path.exists('/pytodo/db'):
     makedirs('/pytodo/db')
 
+card_g = Card()
+user_g = User()
+subject_g = Subject()
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -26,7 +30,7 @@ def register_user():
     
     if request.method == 'POST':
         if recaptcha.verify():
-            error = User().register(request.form['user'],request.form['passwd'])
+            error = user_g.register(request.form['user'],request.form['passwd'])
             if error:
                 return render_template('register.html', error=error, context=Context.register)
             flash('Registration succesull!')
@@ -46,7 +50,7 @@ def login():
         return redirect(url_for('subject_overview'))
 
     if request.method == 'POST':
-        error = User().login(request.form['user'],request.form['passwd'])
+        error = user_g.login(request.form['user'],request.form['passwd'])
         if not error:
             flash('You were succesfully logged in!')
             return redirect(url_for('subject_overview'))
@@ -63,19 +67,19 @@ def logout():
 @app.route('/cards', methods=['GET', 'POST'])
 @login_required
 def cards():
-    user = User().get_current_user()
-    subjects = Subject().get_subject_by_user(user.id)
-    cards = Card().get_active_cards_by_user(user.id)
+    user = user_g.get_current_user()
+    subjects = subject_g.get_subject_by_user(user.id)
+    cards = card_g.get_active_cards_by_user(user.id)
 
     if request.method == 'POST':
         if 'card_id_del' in request.form.keys():
-            Card().delete(request.form['card_id_del'])
+            card_g.delete(request.form['card_id_del'])
 
         elif 'card_id_archive' in request.form.keys():
-            Card().archive(request.form['card_id_archive'])            
+            card_g.archive(request.form['card_id_archive'])            
 
         elif 'card_id' in request.form.keys():
-            Card().edit(request.form['card_id'],request.form['edit_title'],request.form['edit_content'],request.form['subject_id'])
+            card_g.edit(request.form['card_id'],request.form['edit_title'],request.form['edit_content'],request.form['subject_id'])
 
         if 'search' in request.form.keys():
             search = request.form['search']
@@ -98,22 +102,22 @@ def create_card():
     user = User().get_current_user()
     
     if request.method == 'POST':
-        Card().create(title=request.form['title'], content=request.form['content'], user_id=user.id, subject_id=request.form['subject_id'])
+        card_g.create(title=request.form['title'], content=request.form['content'], user_id=user.id, subject_id=request.form['subject_id'])
         return redirect(url_for('cards'))
 
-    subjects = Subject().get_subject_by_user(user.id)
+    subjects = subject_g.get_subject_by_user(user.id)
     return render_template('create_card.html', subjects=subjects, context=Context.card_create)
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def subject_overview():
-    user = User().get_current_user()
-    subjects = Subject().get_subject_by_user(user.id)
+    user = user_g.get_current_user()
+    subjects = subject_g.get_subject_by_user(user.id)
 
     if request.method == 'POST':
         if 'subject_del' in request.form.keys():
             if request.form['confirm_delete'] == 'true':
-                Subject().delete(request.form['subject_del'])
+                subject_g.delete(request.form['subject_del'])
         
         if 'search' in request.form.keys():
             search = request.form['search']
@@ -140,8 +144,8 @@ def create_subject():
 
     if request.method == 'POST':
         if 'subj_create' in request.form.keys():
-            user = User().get_current_user()
-            Subject().create(request.form['subject'], user.id)
+            user = user_g.get_current_user()
+            subject_g.create(request.form['subject'], user.id)
             session.pop('create_subject', None)
 
         elif 'subj_create_cancel' in request.form.keys():
@@ -154,30 +158,30 @@ def create_subject():
 def cards_by_subject(subject_name):
     if request.method == 'POST':
         if 'card_id_del' in request.form.keys():
-            Card().delete(request.form['card_id_del'])
+            card_g.delete(request.form['card_id_del'])
 
         elif 'card_id_archive' in request.form.keys():
-            Card().archive(request.form['card_id_archive'])
+            card_g.archive(request.form['card_id_archive'])
 
         elif 'card_id' in request.form.keys():
-            Card().edit(request.form['card_id'],request.form['edit_title'],request.form['edit_content'],request.form['subject_id'])
+            card_g.edit(request.form['card_id'],request.form['edit_title'],request.form['edit_content'],request.form['subject_id'])
 
-    user = User().get_current_user()
-    subjects = Subject().get_subject_by_user(user.id)
+    user = user_g.get_current_user()
+    subjects = subject_g.get_subject_by_user(user.id)
 
-    subject = Subject().get_single_subject(subject_name)
-    cards = Card().get_active_cards_by_subject(subject.id)
+    subject = subject_g.get_single_subject(subject_name)
+    cards = card_g.get_active_cards_by_subject(subject.id)
     return render_template('cards.html', cards=cards, context=Context.subject_single + subject.name, subject_name=subject.name, subjects=subjects, request_path=request.path)
 
 @app.route('/<subject_name>/cards/create', methods=['GET', 'POST'])
 @login_required
 def create_card_by_subject(subject_name):
-    user = User().get_current_user()
+    user = user_g.get_current_user()
 
     if request.method == 'POST':
-        Card().create(request.form['title'], request.form['content'], user.id, request.form['subject_id'])
+        card_g.create(request.form['title'], request.form['content'], user.id, request.form['subject_id'])
         return redirect(url_for('cards_by_subject', subject_name=subject_name))
 
-    subjects = Subject().get_subject_by_user(user.id)
+    subjects = subject_g.get_subject_by_user(user.id)
     return render_template('create_card.html',subjects=subjects, subject_name=subject_name)
 
