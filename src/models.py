@@ -90,6 +90,17 @@ class Card(db.Model):
 
     def get_active_cards_by_subject(self, subject_id):
         return Card.query.filter_by(subject_id=subject_id)
+    
+    def search_cards(self, search, user_id):
+        cards = self.get_active_cards_by_user(user_id)
+        if search == '':
+            search_cards = cards
+        else:
+            search_cards = []
+            for card in cards:
+                if str.lower(search) in str.lower(card.title):
+                    search_cards.append(card)
+        return search_cards
 
 class Subject(db.Model):
     __tablename__ = 'subjects'
@@ -124,13 +135,24 @@ class Subject(db.Model):
             count += 1
         return count
 
-
+    def search_subjects(self, search, user_id):
+        subjects = self.get_subject_by_user(user_id)
+        if search == '':
+            search_subj = subjects
+        else:
+            search_subj = []
+            for subject in subjects:
+                if str.lower(search) in str.lower(subject.name):
+                    search_subj.append(subject)
+        return search_subj
 
 class Context:
     subject = 'Subject Overview'
     subject_single = 'Subject - '
     subject_create = 'Create new Subject'
+    subject_search = 'Search Subjects'
     card = 'Card Overview'
     card_create = 'Create new Card'
+    card_search = 'Search Cards'
     register = 'Pytodo Register'
     login = 'Pytodo Login'

@@ -66,19 +66,11 @@ def cards():
 
         elif 'card_id' in request.form.keys():
             card_g.edit(request.form['card_id'],request.form['edit_title'],request.form['edit_content'],request.form['subject_id'])
-
+    
         if 'search' in request.form.keys():
             search = request.form['search']
-            if search == '':
-                search_cards = cards
-            else:
-                search_cards = []
-                for card in cards:
-                    if str.lower(search) in str.lower(card.title):
-                        search_cards.append(card)
-    
-    if 'search' in request.form.keys():
-        return render_template('cards.html', cards=search_cards, subjects=subjects, context=Context.card, request_path=request.path)
+            search_cards = card_g.search_cards(search,user.id)
+            return render_template('cards.html', cards=search_cards, subjects=subjects, context=Context.card_search, request_path=request.path, search=search)
 
     return render_template('cards.html', cards=cards, subjects=subjects, context=Context.card, request_path=request.path)
 
@@ -108,24 +100,16 @@ def subject_overview():
         if 'subject_del' in request.form.keys():
             if request.form['confirm_delete'] == 'true':
                 subject_g.delete(request.form['subject_del'])
-        
+    
         if 'search' in request.form.keys():
             search = request.form['search']
-            if search == '':
-                search_subj = subjects
-            else:
-                search_subj = []
-                for subject in subjects:
-                    if str.lower(search) in str.lower(subject.name):
-                        search_subj.append(subject)
-    
-    if 'search' in request.form.keys():
-        return render_template('index.html', subjects=search_subj, context=Context.subject, request_path=request.path)
+            search_subj = subject_g.search_subjects(search,user.id)
+            return render_template('index.html', subjects=search_subj, context=Context.subject_search, request_path=request.path, search=search)
+
+    if 'create_subject' in session:
+        return render_template('index.html', subjects=subjects, context=Context.subject_create)
     else:
-        if 'create_subject' in session:
-            return render_template('index.html', subjects=subjects, context=Context.subject_create)
-        else:
-            return render_template('index.html', subjects=subjects, context=Context.subject, request_path=request.path)
+        return render_template('index.html', subjects=subjects, context=Context.subject, request_path=request.path)
 
 @app.route('/subject/create', methods=['GET', 'POST'])
 @login_required
