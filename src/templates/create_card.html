@@ -18,7 +18,7 @@
                 <label for="content" class="white-text">Card Content</label>
             </div>
             <div class="input-field white-text">
-                <select name="subject_id">
+                <select name="subject_id" required>
                     {% if subject_name is defined %}
                     <option value="" disabled>Choose your option</option>
                     {% else %}
@@ -32,7 +32,7 @@
                         {% endif %}
                     {% endfor %}}
                 </select>
-                <label>Subject Select</label>
+                <label for="subject_id" class="white-text">Select a subject</label>
             </div>
         </div>
         <div class="row">

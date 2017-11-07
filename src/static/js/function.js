@@ -16,8 +16,8 @@ function remove_fixed() {
 
 function check_delete_subject() {
     if (confirm('Delete a subject will result in the deletion of all cards which belong to the subject!') == true){
-        $('#confirm_delete').val(True)
+        $('#confirm_delete').val(true)
     }else {
-        $('#confirm_delete').val(False)
+        $('#confirm_delete').val(false)
     }
 }
