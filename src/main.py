@@ -88,7 +88,11 @@ def create_card():
     user = User().get_current_user()
     
     if request.method == 'POST':
-        card_g.create(title=request.form['title'], content=request.form['content'], user_id=user.id, subject_id=request.form['subject_id'])
+        card_g.create(request.form['title'],request.form['content'],user.id,request.form['subject_id'])
+        return redirect(url_for('cards'))
+
+    if subject_g.get_subject_count(user.id) == 0:
+        flash('You need to create a subject first!')
         return redirect(url_for('cards'))
 
     subjects = subject_g.get_subject_by_user(user.id)

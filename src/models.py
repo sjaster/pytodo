@@ -1,9 +1,9 @@
-from flask import session
+from flask import session, flash
 from enum import Enum
 from uuid import uuid4
 from hashlib import sha256
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound, UnmappedInstanceError
 from flask_sqlalchemy import SQLAlchemy
 from pytodo.config import db
 
@@ -106,13 +106,25 @@ class Subject(db.Model):
 
     def delete(self, subject_id):
         subject = db.session.query(Subject).filter_by(id=subject_id).first()
-        db.session.delete(subject)
-        db.session.commit()
+        try:
+            db.session.delete(subject)
+            db.session.commit()
+        except:
+            flash('This subject has already been deleted!')
 
     def create(self, name, user_id):
         new_subject = Subject(name=name, user_id=user_id)
         db.session.add(new_subject)
         db.session.commit()
+
+    def get_subject_count(self, user_id):
+        subjects = self.get_subject_by_user(user_id)
+        count = 0
+        for subject in subjects:
+            count += 1
+        return count
+
+
 
 class Context:
     subject = 'Subject Overview'
