@@ -1,13 +1,17 @@
-FROM python:3.6
+FROM python:alpine
 
 WORKDIR /pytodo
+
+COPY ./src /pytodo
 
 ADD requirements /pytodo
 
 RUN pip install -r requirements
 
-ENV FLASK_APP=main.py
+ENV FLASK_APP=/pytodo/main.py
 
-ENV FLASK_DEBUG=1
+ENV FLASK_DEBUG=0
 
 EXPOSE 80
+
+CMD ["flask","run","--host=0.0.0.0","--port=5001"]

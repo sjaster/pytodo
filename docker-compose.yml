@@ -1,9 +1,0 @@
-version: '3'
-services:
-  pytodo:
-    build: .
-    command: flask run --host=0.0.0.0 --port=80
-    ports:
-      - "5000:80"
-    volumes:
-      - ./src:/pytodo/
