@@ -11,11 +11,11 @@ Light Deployment with Docker and Docker-Compose
 ### Install Dependencies
 For the deploy process you only need to packages installed on your system.
 
-**docker** and **docker-compose**
+**docker**
 
 Install them with the package manager of your choice.
 ```
-$ pacman -S docker docker-compose
+$ pacman -S docker
 ```
 
 ### Start Docker Engine
@@ -23,26 +23,23 @@ $ pacman -S docker docker-compose
 $ systemctl start docker.service
 ```
 
-### Run Docker Container
+### Build Docker Container
+
 ```
 $ cd pytodo
-$ docker-compose up
+$ docker build -t pytodo .
 ```
-Access through localhost:5000
+
+### Run Docker Container
+```
+$ docker run -p 5001:5001 -v /pathtodb:/pytodo/db/ pytodo
+```
+Access through localhost:5001
+
+**Important Note:** The Database is not inside the docker container. You have to mount it on the docker run process as an extra volume.
 
 ---
-### Database Migrations
 
-If you want to alter the Database you can use the flask-migration package which is installed inside the Docker Container.
-
-To run a migration on the database the following steps are required.
-
-1. Change the Model Structure in `models.py` 
-2. Find the ID of your docker container with `docker ps`
-3. Run `docker exec <container-id> flask db migrate` to create a migration
-4. Run `docker exec <container-id> flask db upgrade` to apply the migration on the database
-
----
 ## Project colorsheet based on materialize css colors
 
 ### Navbar
