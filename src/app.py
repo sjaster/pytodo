@@ -1,12 +1,22 @@
-from flask import request, session, redirect, url_for, render_template, flash, json
-from .models import User, Card, Subject, Context
-from .config import app, migrate, db, recaptcha
-from .decorators import check_login, login_required
-from os import makedirs, path
+from flask import Flask, request, session, redirect, url_for, render_template, flash, json
+from models import User, Card, Subject, Context, db
+from decorators import check_login, login_required
+from flask_recaptcha import ReCaptcha
 
+app = Flask(__name__)
 
-if not path.exists('/pytodo/db'):
-    makedirs('/pytodo/db')
+app.config.from_object(__name__)
+app.config.update(dict(SECRET_KEY='dev_key'))
+app.config.update(dict(SQLALCHEMY_DATABASE_URI='sqlite:////pytodo/db/db.sqlite3'))
+app.config.update(dict(SQLALCHEMY_TRACK_MODIFICATIONS='False'))
+app.config.update(dict(RECAPTCHA_ENABLED=True))
+app.config.update(dict(RECAPTCHA_SITE_KEY='6Leg0jYUAAAAACe8_cMhVt7_xdcoE9XtnRDNTVse'))
+app.config.update(dict(RECAPTCHA_SECRET_KEY='6Leg0jYUAAAAAFgowDmwMu28NYyzE4Fo_3O3X8MH'))
+
+db.init_app(app)
+db.create_all(app=app)
+
+recaptcha = ReCaptcha(app)
 
 card_g = Card()
 user_g = User()
@@ -77,7 +87,7 @@ def cards():
 @app.route('/cards/create', methods=['GET', 'POST'])
 @login_required
 def create_card():
-    user = User().get_current_user()
+    user = user_g.get_current_user()
     
     if request.method == 'POST':
         card_g.create(request.form['title'],request.form['content'],user.id,request.form['subject_id'])
@@ -157,5 +167,9 @@ def create_card_by_subject(subject_name):
         return redirect(url_for('cards_by_subject', subject_name=subject_name))
 
     subjects = subject_g.get_subject_by_user(user.id)
-    return render_template('create_card.html',subjects=subjects, subject_name=subject_name)
+    return render_template('create_card.html', subjects=subjects, subject_name=subject_name)
 
+@app.route('/<username>/manage', methods=['GET','POST'])
+@login_required
+def manage_user(username):
+    return render_template('user.html', username=username, context=username+' '+Context.manage_user)

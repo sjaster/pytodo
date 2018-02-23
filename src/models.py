@@ -5,7 +5,8 @@ from hashlib import sha256
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, UnmappedInstanceError
 from flask_sqlalchemy import SQLAlchemy
-from pytodo.config import db
+
+db = SQLAlchemy()
 
 class State(Enum):
     ACTIVE = 1
@@ -156,3 +157,4 @@ class Context:
     card_search = 'Search Cards'
     register = 'Pytodo Register'
     login = 'Pytodo Login'
+    manage_user = 'management'

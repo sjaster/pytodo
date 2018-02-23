@@ -8,9 +8,9 @@ ADD requirements /pytodo
 
 RUN pip install -r requirements
 
-ENV FLASK_APP=/pytodo/main.py
+ENV FLASK_APP=/pytodo/app.py
 
-ENV FLASK_DEBUG=0
+ENV FLASK_DEBUG=1
 
 EXPOSE 80
 
