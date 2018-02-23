@@ -11,17 +11,19 @@ Light Deployment with Docker and Docker-Compose
 ### Install Dependencies
 For the deploy process you only need to packages installed on your system.
 
-**docker**
+**docker** and **docker-compose**
 
 Install them with the package manager of your choice.
 ```
-$ pacman -S docker
+$ pacman -S docker docker-compose
 ```
 
 ### Start Docker Engine
 ```
 $ systemctl start docker.service
 ```
+
+You can either run through a single docker container or through docker-compose.
 
 ### Build Docker Container
 
@@ -37,6 +39,12 @@ $ docker run -p 5001:5001 -v /pathtodb:/pytodo/db/ pytodo
 Access through localhost:5001
 
 **Important Note:** The Database is not inside the docker container. You have to mount it on the docker run process as an extra volume.
+
+### Run Docker Compose
+
+```
+$ docker-compose up
+```
 
 ---
 
