@@ -5,4 +5,5 @@ services:
     ports:
       - 5001:5001
     volumes:
+      - ./src:/pytodo
       - ./data:/pytodo/db
