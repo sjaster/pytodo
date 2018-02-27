@@ -172,4 +172,13 @@ def create_card_by_subject(subject_name):
 @app.route('/<username>/manage', methods=['GET','POST'])
 @login_required
 def manage_user(username):
+    error = None
+
+    if request.method == 'POST':
+        user = user_g.get_current_user()
+        error = user.change_passwd(user, request.form['oldpw'], request.form['newpw'], request.form['repeatpw'])
+        if error:
+            return render_template('user.html', error=error, username=username, context=username+' '+Context.manage_user)
+        flash('Successfully changed your password')
+
     return render_template('user.html', username=username, context=username+' '+Context.manage_user)

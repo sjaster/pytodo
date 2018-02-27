@@ -1,0 +1,41 @@
+{% extends "layout.html" %} 
+{% block body %}
+<div class="container">
+<div class="row">
+    <form class="col s4 push-s4 center" method="POST" action="{{ url_for('manage_user', username=username) }}">
+        <div class="row">
+            <div class="input-field">
+                <input name="oldpw" type="password" class="white-text validate" required/> 
+                <label for="oldpw" class="white-text active">Old password</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field">
+                <input name="newpw" type="password" class="white-text validate" required/>
+                <label for="newpw" class="white-text active">New password</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field">
+                <input name="repeatpw" type="password" class="white-text validate" required/>
+                <label for="repeatpw" class="white-text active">Repeat new password</label>
+            </div>
+        </div>
+         {% if error %}
+        <div class="row">
+            <div class="col s12 card-panel orange accent-3 flash-panel">
+                <span class="white-text">
+                    <b>An error occured during the verification of your password change!</b>
+                    <br/>{{ error }}</span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col s4 push-s4">
+                <button class="btn waves-effect waves-light teal lighten-1" type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{% endblock %}

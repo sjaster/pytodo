@@ -54,6 +54,16 @@ class User(db.Model):
 
     def get_single_user(self, username):
         return User.query.filter_by(username=username).one()
+    
+    def change_passwd(self, user, oldpw, newpw, repeatpw):
+        if(self.check_passwd(user.password, oldpw)):
+            if(newpw == repeatpw):
+                user.password = self.hash_passwd(newpw)
+                db.session.commit()
+            else:
+                return 'Your new passwords did not match'
+        else:
+            return 'Please enter a valid current password'
         
 
 class Card(db.Model):

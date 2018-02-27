@@ -59,7 +59,7 @@
                 {% endif %}
             </ul>
             <ul class="right">
-                <li><a href="#"><i class="material-icons left">person</i>{{ session.username }}</a></li>
+                <li><a href="{{ url_for('manage_user', username=session.username) }}"><i class="material-icons left">person</i>{{ session.username }}</a></li>
                 <li><a class="btn waves-effect waves-light teal lighten-1" href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
             {% endif %}
