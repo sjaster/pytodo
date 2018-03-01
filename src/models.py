@@ -64,6 +64,20 @@ class User(db.Model):
                 return 'Your new passwords did not match'
         else:
             return 'Please enter a valid current password'
+    
+    def change_username(self, user, newuser, repeatuser):
+        if user.username != newuser:
+            if newuser == repeatuser:
+                user.username = newuser
+                try:
+                    db.session.commit()
+                    session['username'] = newuser
+                except IntegrityError:
+                    return 'Username already taken!'
+            else:
+                return 'Both usernames must match!'
+        else:
+            return 'Your old username can not be your current username'
         
 
 class Card(db.Model):

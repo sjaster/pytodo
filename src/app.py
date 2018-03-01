@@ -169,16 +169,29 @@ def create_card_by_subject(subject_name):
     subjects = subject_g.get_subject_by_user(user.id)
     return render_template('create_card.html', subjects=subjects, subject_name=subject_name)
 
-@app.route('/<username>/manage', methods=['GET','POST'])
+@app.route('/<username>/manage')
 @login_required
 def manage_user(username):
+    return render_template('user.html', username=username, context=username+' '+Context.manage_user)
+
+@app.route('/<username>/manage/<id>', methods=['POST','GET'])
+@login_required
+def change_user(username, id):
     error = None
 
-    if request.method == 'POST':
+    if id == 'username':
+        user = user_g.get_current_user()
+        error = user.change_username(user, request.form['newuser'], request.form['repeatuser'])
+        if error:
+            return render_template('user.html', error=error, username=username, context=username + ' ' + Context.manage_user)
+        flash('Successfully changed your username')
+
+    if id == 'password':
         user = user_g.get_current_user()
         error = user.change_passwd(user, request.form['oldpw'], request.form['newpw'], request.form['repeatpw'])
         if error:
-            return render_template('user.html', error=error, username=username, context=username+' '+Context.manage_user)
+            return render_template('user.html', error=error, username=username, context=username + ' ' + Context.manage_user)
         flash('Successfully changed your password')
 
-    return render_template('user.html', username=username, context=username+' '+Context.manage_user)
+    return redirect(url_for('manage_user', username=username))
+        

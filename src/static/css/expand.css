@@ -18,3 +18,7 @@ body {
 .icon-search-bar {
   margin-top: -12px
 }
+
+.change-form {
+  background: white;
+}

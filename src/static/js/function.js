@@ -8,6 +8,8 @@ $( document ).ready(function(){
     });
     //Select Menu
     $('select').material_select();
+    //Collapsible User Management
+    $('.collapsible').collapsible();
 })
 
 function remove_fixed() {
