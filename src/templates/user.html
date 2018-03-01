@@ -48,13 +48,13 @@
                 <form method="POST" action="{{ url_for('change_user', username=username, id='username') }}">
                     <div class="row">
                         <div class="input-field">
-                            <input name="newuser" type="password" class="validate" required/>
+                            <input name="newuser" type="text" class="validate" required/>
                             <label for="newuser" class="active">New username (unique)</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field">
-                            <input name="repeatuser" type="password" class="validate" required/>
+                            <input name="repeatuser" type="text" class="validate" required/>
                             <label for="repeatuser" class="active">Repeat new username</label>
                         </div>
                     </div>
